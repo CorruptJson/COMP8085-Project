@@ -14,7 +14,6 @@ from sklearn.utils import shuffle
 from PIL import Image
 
 
-
 def main():
     # file stuff
     dirname = os.path.dirname(__file__)
@@ -23,13 +22,49 @@ def main():
 
     img_list_train = os.listdir(path_train)
     img_list_test = os.listdir(path_test)
+    alphabets = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+                 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
-    # get image
+    # get image train
+    train_x = []
+    train_y = []
     for img in img_list_train:
-        im = Image.open(os.path.join(path_train, img))
-        na = np.array(im)
-        print(f"Image Name: {img}\nImage Data:\n{na}")
-        break
+        train_x.append(np.array(Image.open(os.path.join(path_train, img))))
+        label = []
+        for i in alphabets:
+            label.append(1 if i == img[0] else 0)
+        train_y.append(label)
+
+    train_x = np.array(train_x)
+    train_yOHE = np.array(train_y)
+    print("Train data shape: ", train_x.shape)
+
+    # get image test
+    test_x = []
+    test_y = []
+    for img in img_list_test:
+        test_x.append(np.array(Image.open(os.path.join(path_test, img))))
+        label = []
+        for i in alphabets:
+            label.append(1 if i == img[0] else 0)
+        test_y.append(label)
+
+    test_x = np.array(test_x)
+    test_yOHE = np.array(test_y)
+    print("Test data shape: ", test_x.shape)
+
+    # Reshaping the training & test dataset so that it can be put in the model...
+    train_X = train_x.reshape(train_x.shape[0], train_x.shape[1], train_x.shape[2], 1)
+    print("New shape of train data: ", train_X.shape)
+    test_X = test_x.reshape(test_x.shape[0], test_x.shape[1], test_x.shape[2], 1)
+    print("New shape of test data: ", test_X.shape)
+
+    # Converting the labels to categorical values...
+    print("New shape of train labels: ", train_yOHE.shape)
+    print("New shape of test labels: ", test_yOHE.shape)
+
+    CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets)
+
 
 def neural_network_example():
     # Read the data...
@@ -88,7 +123,7 @@ def neural_network_example():
     print("New shape of train data: ", train_X.shape)
 
     test_X = test_x.reshape(test_x.shape[0], test_x.shape[1], test_x.shape[2], 1)
-    print("New shape of train data: ", test_X.shape)
+    print("New shape of test data: ", test_X.shape)
 
     # Converting the labels to categorical values...
 
@@ -98,8 +133,11 @@ def neural_network_example():
     test_yOHE = to_categorical(test_y, num_classes=26, dtype='int')
     print("New shape of test labels: ", test_yOHE.shape)
 
-    # CNN model...
+    CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets)
 
+
+def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
+    # CNN model...
     model = Sequential()
 
     model.add(Conv2D(filters=32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)))
@@ -116,7 +154,7 @@ def neural_network_example():
     model.add(Dense(64, activation="relu"))
     model.add(Dense(128, activation="relu"))
 
-    model.add(Dense(26, activation="softmax"))
+    model.add(Dense(len(alphabets), activation="softmax"))
 
     model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
     reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=1, min_lr=0.0001)
@@ -148,7 +186,7 @@ def neural_network_example():
     for i, ax in enumerate(axes):
         img = np.reshape(test_X[i], (28, 28))
         ax.imshow(img, cmap="Greys")
-        pred = word_dict[np.argmax(test_yOHE[i])]
+        pred = alphabets[np.argmax(test_yOHE[i])]
         ax.set_title("Prediction: " + pred)
         ax.grid()
 
@@ -167,7 +205,7 @@ def neural_network_example():
     img_final = cv2.resize(img_thresh, (28, 28))
     img_final = np.reshape(img_final, (1, 28, 28, 1))
 
-    img_pred = word_dict[np.argmax(model.predict(img_final))]
+    img_pred = alphabets[np.argmax(model.predict(img_final))]
 
     cv2.putText(img, "Dataflair _ _ _ ", (20, 25), cv2.FONT_HERSHEY_TRIPLEX, 0.7, color=(0, 0, 230))
     cv2.putText(img, "Prediction: " + img_pred, (20, 410), cv2.FONT_HERSHEY_DUPLEX, 1.3, color=(255, 0, 30))
@@ -180,7 +218,7 @@ def neural_network_example():
     cv2.destroyAllWindows()
     pass
 
-if __name__ == '__main__':
-    #main()
-    neural_network_example()
 
+if __name__ == '__main__':
+    # main()
+    neural_network_example()
