@@ -12,6 +12,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from PIL import Image
+from tensorflow import keras
 
 
 def main():
@@ -88,16 +89,18 @@ def neural_network_example():
                  12: 'M', 13: 'N', 14: 'O', 15: 'P', 16: 'Q', 17: 'R', 18: 'S', 19: 'T', 20: 'U', 21: 'V', 22: 'W',
                  23: 'X', 24: 'Y', 25: 'Z'}
 
-    # Plotting the number of alphabets in the dataset...
+    alphabets = []
+    for i in word_dict.values():
+        alphabets.append(i)
 
+    # Plotting the number of alphabets in the dataset...
+    """ 
     train_yint = np.int0(y)
     count = np.zeros(26, dtype='int')
     for i in train_yint:
         count[i] += 1
 
-    alphabets = []
-    for i in word_dict.values():
-        alphabets.append(i)
+
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
     ax.barh(alphabets, count)
@@ -115,7 +118,7 @@ def neural_network_example():
 
     for i in range(9):
         axes[i].imshow(np.reshape(shuff[i], (28, 28)), cmap="Greys")
-    plt.show()
+    plt.show() """
 
     # Reshaping the training & test dataset so that it can be put in the model...
 
@@ -138,40 +141,44 @@ def neural_network_example():
 
 def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
     # CNN model...
-    model = Sequential()
+    if (os.path.exists(r'model_hand.h5')):
 
-    model.add(Conv2D(filters=32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)))
-    model.add(MaxPool2D(pool_size=(2, 2), strides=2))
+        model = keras.models.load_model(r'model_hand.h5')
+    else:
+        model = Sequential()
 
-    model.add(Conv2D(filters=64, kernel_size=(3, 3), activation='relu', padding='same'))
-    model.add(MaxPool2D(pool_size=(2, 2), strides=2))
+        model.add(Conv2D(filters=32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)))
+        model.add(MaxPool2D(pool_size=(2, 2), strides=2))
 
-    model.add(Conv2D(filters=128, kernel_size=(3, 3), activation='relu', padding='valid'))
-    model.add(MaxPool2D(pool_size=(2, 2), strides=2))
+        model.add(Conv2D(filters=64, kernel_size=(3, 3), activation='relu', padding='same'))
+        model.add(MaxPool2D(pool_size=(2, 2), strides=2))
 
-    model.add(Flatten())
+        model.add(Conv2D(filters=128, kernel_size=(3, 3), activation='relu', padding='valid'))
+        model.add(MaxPool2D(pool_size=(2, 2), strides=2))
 
-    model.add(Dense(64, activation="relu"))
-    model.add(Dense(128, activation="relu"))
+        model.add(Flatten())
 
-    model.add(Dense(len(alphabets), activation="softmax"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(128, activation="relu"))
 
-    model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
-    reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=1, min_lr=0.0001)
-    early_stop = EarlyStopping(monitor='val_loss', min_delta=0, patience=2, verbose=0, mode='auto')
+        model.add(Dense(len(alphabets), activation="softmax"))
 
-    history = model.fit(train_X, train_yOHE, epochs=1, callbacks=[reduce_lr, early_stop],
-                        validation_data=(test_X, test_yOHE))
+        model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
 
-    model.summary()
-    model.save(r'model_hand.h5')
+        reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=1, min_lr=0.0001)
+        early_stop = EarlyStopping(monitor='val_loss', min_delta=0, patience=2, verbose=0, mode='auto')
 
-    # Displaying the accuracies & losses for train & validation set...
+        history = model.fit(train_X, train_yOHE, epochs=1, callbacks=[reduce_lr, early_stop],
+                            validation_data=(test_X, test_yOHE))
+        model.summary()
+        model.save(r'model_hand.h5')
 
-    print("The validation accuracy is :", history.history['val_accuracy'])
-    print("The training accuracy is :", history.history['accuracy'])
-    print("The validation loss is :", history.history['val_loss'])
-    print("The training loss is :", history.history['loss'])
+        # Displaying the accuracies & losses for train & validation set...
+
+        print("The validation accuracy is :", history.history['val_accuracy'])
+        print("The training accuracy is :", history.history['accuracy'])
+        print("The validation loss is :", history.history['val_loss'])
+        print("The training loss is :", history.history['loss'])
 
     # Making model predictions...
 
@@ -192,7 +199,7 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
 
     # Prediction on external image...
 
-    img = cv2.imread('./test/R-935.png')
+    img = cv2.imread('./highres_handwritten_b.png')
     img_copy = img.copy()
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
