@@ -243,6 +243,7 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
 
 
 def baseline2(filename):
+    ##Baseline that checks specific pixels and passes the values through a "decision tree"
     im = Image.open(filename, "r")
     pix = im.load()
     width, height = im.size
@@ -303,6 +304,81 @@ def baseline2(filename):
     pass
 
 def baseline3(filename):
+    ##baseline checks pixels in a column and in a row through the center
+
+    im = Image.open(filename, "r")
+    pix = im.load()
+    width, height = im.size
+    half_width = width/2
+    begin = False
+    count_height = 0
+    count_width = 0
+    for h in range(0, height):
+        if pix[h, half_width] <= 200: #goes dark
+            begin = True
+        elif begin and pix[h, half_width] >= 250: #becomes white
+            count_height += 1
+            begin = False
+    half_height = height/2
+    for w in range(0, width):
+        if pix[half_height, w] <=200: #Goes dark
+            begin = True
+        elif begin and pix[half_height, w] >= 250: #Becomes white
+            count_width += 1
+            begin = False
+    letter_predict = 0
+    if count_height == 0:
+        if count_width == 0:
+            letter_predict = 0
+        elif count_width == 1:
+            letter_predict = 1
+        elif count_width == 2:
+            letter_predict = 2
+        elif count_width == 3:
+            letter_predict = 3
+        else:
+            print("too many")
+
+    elif count_height == 1:
+        if count_width == 0:
+            letter_predict = 4
+        elif count_width == 1:
+            letter_predict = 5
+        elif count_width == 2:
+            letter_predict = 6
+        elif count_width == 3:
+            letter_predict = 7
+        else:
+            print("too many")
+
+    elif count_height == 2:
+        if count_width == 0:
+            letter_predict = 8
+        elif count_width == 1:
+            letter_predict = 9
+        elif count_width == 2:
+            letter_predict = 10
+        elif count_width == 3:
+            letter_predict = 11
+        else:
+            print("too many")
+
+    elif count_height == 3:
+        if count_width == 0:
+            letter_predict = 12
+        elif count_width == 1:
+            letter_predict = 13
+        elif count_width == 2:
+            letter_predict = 14
+        elif count_width == 3:
+            letter_predict = 15
+        else:
+            print("too many")
+
+    else:
+        print("Theres too many height crossings")
+
+        print("Baseline 2 predicted: " + word_dict[letter_predict])
     pass
 
 
