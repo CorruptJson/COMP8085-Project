@@ -256,7 +256,7 @@ def baseline3(filename):
 
 if __name__ == '__main__':
     # main()
-    #neural_network_example()
+    neural_network_example()
 
-    img_filename = './test/R-935.png'
-    baseline2(img_filename)
+    #img_filename = './test/R-935.png'
+    #baseline2(img_filename)
