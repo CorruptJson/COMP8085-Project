@@ -223,6 +223,34 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
     exp_2 = np.hstack((exp2_a, exp2_b, exp2_c))
     cv2.imshow('Experiment 2', exp_2)
 
+    exp3_a = pred_img('./experiments/exp3_a.png', model, alphabets, "Experiment 3: A")
+    exp3_b = pred_img('./experiments/exp3_b.png', model, alphabets, "Experiment 3: B")
+    exp3_c = pred_img('./experiments/exp3_c.png', model, alphabets, "Experiment 3: C")
+
+    exp_3 = np.hstack((exp3_a, exp3_b, exp3_c))
+    cv2.imshow('Experiment 3', exp_3)
+
+    exp4_a = pred_img('./experiments/exp4_a.png', model, alphabets, "Experiment 4: A")
+    exp4_b = pred_img('./experiments/exp4_b.png', model, alphabets, "Experiment 4: B")
+    exp4_c = pred_img('./experiments/exp4_c.png', model, alphabets, "Experiment 4: C")
+
+    exp_4 = np.hstack((exp4_a, exp4_b, exp4_c))
+    cv2.imshow('Experiment 4', exp_4)
+
+    exp5_a = pred_img('./experiments/exp5_a.png', model, alphabets, "Experiment 5: A")
+    exp5_b = pred_img('./experiments/exp5_b.png', model, alphabets, "Experiment 5: B")
+    exp5_c = pred_img('./experiments/exp5_c.png', model, alphabets, "Experiment 5: C")
+
+    exp_5 = np.hstack((exp5_a, exp5_b, exp5_c))
+    cv2.imshow('Experiment 5', exp_5)
+
+    exp6_a = pred_img('./experiments/exp6_a.png', model, alphabets, "Experiment 6: A")
+    exp6_b = pred_img('./experiments/exp6_b.png', model, alphabets, "Experiment 6: B")
+    exp6_c = pred_img('./experiments/exp6_c.png', model, alphabets, "Experiment 6: C")
+
+    exp_6 = np.hstack((exp6_a, exp6_b, exp6_c))
+    cv2.imshow('Experiment 6', exp_6)
+
 
 
 
