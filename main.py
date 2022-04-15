@@ -225,7 +225,7 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
     print("Baseline 1: " + word_dict[random.randint(0, 25)])
 
     #Baseline 2: Pixel Checker Decision Tree
-    baseline2(img_filename)
+    #baseline2(img_filename)
 
 
 
