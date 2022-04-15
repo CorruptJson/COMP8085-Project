@@ -243,11 +243,63 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
 
 
 def baseline2(filename):
-    im = Image.open(filename)
+    im = Image.open(filename, "r")
     pix = im.load()
-    #print(im.size[0])
-    width = im.size[0]
-    height = im.size[0]
+    width, height = im.size
+    print(im.size)
+    if im.mode == "RGB":
+        channels = 3
+        print(channels)
+    elif im.mode =="L":
+        channels = 1
+        print(channels)
+    top = pix[0, width/2]
+    middle = pix[height/2, width/2]
+    left = pix[height/2, 0]
+    right = pix[height/2, width-1]
+
+    letter_predict = 0
+    if top >= 250:
+        if middle >= 250:
+            if left >= 250:
+                if right >= 250:
+                    letter_predict= 0
+                else:
+                    letter_predict = 1
+
+            elif right >= 250:
+                letter_predict = 1
+            else:
+                letter_predict = 2
+        elif left >= 250:
+            if right >= 250:
+                letter_predict = 0
+            else:
+                letter_predict = 1
+        elif right >= 250:
+            letter_predict = 2
+        else:
+            letter_predict = 2
+    elif middle >= 250:
+        if left >= 250:
+            if right >= 250:
+                letter_predict= 0
+            else:
+                letter_predict = 1
+        elif right >= 250:
+            letter_predict = 1
+        else:
+            letter_predict = 2
+    elif left >= 250:
+        if right >= 250:
+            letter_predict = 0
+        else:
+            letter_predict = 1
+    else:
+        letter_predict = 2
+
+    print("Baseline 1 predicted: " + word_dict[letter_predict])
+   
     pass
 
 def baseline3(filename):
@@ -256,7 +308,7 @@ def baseline3(filename):
 
 if __name__ == '__main__':
     # main()
-    neural_network_example()
+    #neural_network_example()
 
-    #img_filename = './test/R-935.png'
-    #baseline2(img_filename)
+    img_filename = './test/R-935.png'
+    baseline2(img_filename)
