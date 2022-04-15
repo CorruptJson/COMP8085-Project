@@ -71,11 +71,9 @@ def main():
 
     CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets)
 
-
 def neural_network_example():
     # Read the data...
     data = pd.read_csv("A_Z Handwritten Data.csv").astype('float32')
-
     # Split data the X - Our data , and y - the prdict label
     X = data.drop('0', axis=1)
     y = data['0']
@@ -104,23 +102,16 @@ def neural_network_example():
     count = np.zeros(26, dtype='int')
     for i in train_yint:
         count[i] += 1
-
-
-
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
     ax.barh(alphabets, count)
-
     plt.xlabel("Number of elements ")
     plt.ylabel("Alphabets")
     plt.grid()
     plt.show()
-
     # Shuffling the data ...
     shuff = shuffle(train_x[:100])
-
     fig, ax = plt.subplots(3, 3, figsize=(10, 10))
     axes = ax.flatten()
-
     for i in range(9):
         axes[i].imshow(np.reshape(shuff[i], (28, 28)), cmap="Greys")
     plt.show() """
@@ -142,6 +133,7 @@ def neural_network_example():
     print("New shape of test labels: ", test_yOHE.shape)
 
     CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets)
+
 
 
 def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
@@ -202,10 +194,50 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
         ax.set_title("Prediction: " + pred)
         ax.grid()
 
-    # Prediction on external image...
-    img = cv2.imread('./highres_handwritten_b.png')
-    img_copy = img.copy()
 
+    
+
+
+
+    #Baseline 1: Guessing Randomly
+    print("Baseline 1: " + word_dict[random.randint(0, 25)])
+
+    #Baseline 2: Pixel Checker Decision Tree
+    #baseline2(img_filename)
+
+
+
+
+    # Prediction on external image...
+    exp1_a = pred_img('./experiments/exp1_a.png', model, alphabets, "Experiment 1: A")
+    exp1_b = pred_img('./experiments/exp1_b.png', model, alphabets, "Experiment 1: B")
+    exp1_c = pred_img('./experiments/exp1_c.png', model, alphabets, "Experiment 1: C")
+
+    exp_1 = np.hstack((exp1_a, exp1_b, exp1_c))
+    cv2.imshow('Experiment 1', exp_1)
+
+    exp2_a = pred_img('./experiments/exp2_a.png', model, alphabets, "Experiment 2: A")
+    exp2_b = pred_img('./experiments/exp2_b.png', model, alphabets, "Experiment 2: B")
+    exp2_c = pred_img('./experiments/exp2_c.png', model, alphabets, "Experiment 2: C")
+
+    exp_2 = np.hstack((exp2_a, exp2_b, exp2_c))
+    cv2.imshow('Experiment 2', exp_2)
+
+
+
+
+
+    while (1):
+        k = cv2.waitKey(1) & 0xFF
+        if k == 27:
+            break
+    cv2.destroyAllWindows()
+
+
+
+def pred_img(filename, model, alphabets, header):
+    img = cv2.imread(filename)
+    img_copy = img.copy()
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (400, 440))
@@ -218,27 +250,11 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
     img_final = np.reshape(img_final, (1, 28, 28, 1))
 
     img_pred = alphabets[np.argmax(model.predict(img_final))]
-
-
-
-    #Baseline 1: Guessing Randomly
-    print("Baseline 1: " + word_dict[random.randint(0, 25)])
-
-    #Baseline 2: Pixel Checker Decision Tree
-    #baseline2(img_filename)
-
-
-
-    cv2.putText(img, "Dataflair _ _ _ ", (20, 25), cv2.FONT_HERSHEY_TRIPLEX, 0.7, color=(0, 0, 230))
+    cv2.putText(img, header, (20, 25), cv2.FONT_HERSHEY_TRIPLEX, 0.7, color=(0, 0, 230))
     cv2.putText(img, "Prediction: " + img_pred, (20, 410), cv2.FONT_HERSHEY_DUPLEX, 1.3, color=(255, 0, 30))
-    cv2.imshow('Dataflair handwritten character recognition _ _ _ ', img)
 
-    while (1):
-        k = cv2.waitKey(1) & 0xFF
-        if k == 27:
-            break
-    cv2.destroyAllWindows()
-    pass
+
+    return img
 
 
 
@@ -307,8 +323,8 @@ def baseline3(filename):
 
 
 if __name__ == '__main__':
-    # main()
-    #neural_network_example()
+    #main()
+    neural_network_example()
 
     img_filename = './test/R-935.png'
     baseline2(img_filename)
