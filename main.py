@@ -3,6 +3,7 @@ import os
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+import random
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Conv2D, MaxPool2D, Dropout
 from tensorflow.keras.optimizers import SGD, Adam
@@ -12,6 +13,10 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from PIL import Image
+
+word_dict = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H', 8: 'I', 9: 'J', 10: 'K', 11: 'L',
+             12: 'M', 13: 'N', 14: 'O', 15: 'P', 16: 'Q', 17: 'R', 18: 'S', 19: 'T', 20: 'U', 21: 'V', 22: 'W',
+             23: 'X', 24: 'Y', 25: 'Z'}
 
 
 def main():
@@ -84,9 +89,9 @@ def neural_network_example():
     print("Test data shape: ", test_x.shape)
 
     # Dictionary for getting characters from index values...
-    word_dict = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H', 8: 'I', 9: 'J', 10: 'K', 11: 'L',
-                 12: 'M', 13: 'N', 14: 'O', 15: 'P', 16: 'Q', 17: 'R', 18: 'S', 19: 'T', 20: 'U', 21: 'V', 22: 'W',
-                 23: 'X', 24: 'Y', 25: 'Z'}
+    # word_dict = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H', 8: 'I', 9: 'J', 10: 'K', 11: 'L',
+    #              12: 'M', 13: 'N', 14: 'O', 15: 'P', 16: 'Q', 17: 'R', 18: 'S', 19: 'T', 20: 'U', 21: 'V', 22: 'W',
+    #              23: 'X', 24: 'Y', 25: 'Z'}
 
     # Plotting the number of alphabets in the dataset...
 
@@ -191,9 +196,10 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
         ax.grid()
 
     # Prediction on external image...
-
-    img = cv2.imread('./test/R-935.png')
+    img_filename = './test/R-935.png'
+    img = cv2.imread(img_filename)
     img_copy = img.copy()
+
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (400, 440))
@@ -207,6 +213,16 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
 
     img_pred = alphabets[np.argmax(model.predict(img_final))]
 
+
+
+    #Baseline 1: Guessing Randomly
+    print("Baseline 1: " + word_dict[random.randint(0, 25)])
+
+    #Baseline 2: Pixel Checker Decision Tree
+    baseline2(img_filename)
+
+
+
     cv2.putText(img, "Dataflair _ _ _ ", (20, 25), cv2.FONT_HERSHEY_TRIPLEX, 0.7, color=(0, 0, 230))
     cv2.putText(img, "Prediction: " + img_pred, (20, 410), cv2.FONT_HERSHEY_DUPLEX, 1.3, color=(255, 0, 30))
     cv2.imshow('Dataflair handwritten character recognition _ _ _ ', img)
@@ -219,6 +235,22 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
     pass
 
 
+
+def baseline2(filename):
+    im = Image.open(filename)
+    pix = im.load()
+    #print(im.size[0])
+    width = im.size[0]
+    height = im.size[0]
+    pass
+
+def baseline3(filename):
+    pass
+
+
 if __name__ == '__main__':
     # main()
-    neural_network_example()
+    #neural_network_example()
+
+    img_filename = './test/R-935.png'
+    baseline2(img_filename)
