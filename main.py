@@ -268,38 +268,38 @@ def baseline2(filename):
                     letter_predict = 1
 
             elif right >= 250:
-                letter_predict = 1
-            else:
                 letter_predict = 2
+            else:
+                letter_predict = 3
         elif left >= 250:
             if right >= 250:
-                letter_predict = 0
+                letter_predict = 4
             else:
-                letter_predict = 1
+                letter_predict = 5
         elif right >= 250:
-            letter_predict = 2
+            letter_predict = 6
         else:
-            letter_predict = 2
+            letter_predict = 7
     elif middle >= 250:
         if left >= 250:
             if right >= 250:
-                letter_predict= 0
+                letter_predict= 8
             else:
-                letter_predict = 1
+                letter_predict = 9
         elif right >= 250:
-            letter_predict = 1
+            letter_predict = 10
         else:
-            letter_predict = 2
+            letter_predict = 11
     elif left >= 250:
         if right >= 250:
-            letter_predict = 0
+            letter_predict = 12
         else:
-            letter_predict = 1
+            letter_predict = 13
     else:
-        letter_predict = 2
+        letter_predict = 14
 
     print("Baseline 1 predicted: " + word_dict[letter_predict])
-   
+
     pass
 
 def baseline3(filename):
