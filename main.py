@@ -251,6 +251,28 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
     exp_6 = np.hstack((exp6_a, exp6_b, exp6_c))
     cv2.imshow('Experiment 6', exp_6)
 
+    exp7_a = pred_img('./experiments/exp7_a.png', model, alphabets, "Experiment 7: A")
+    exp7_b = pred_img('./experiments/exp7_b.png', model, alphabets, "Experiment 7: B")
+    exp7_c = pred_img('./experiments/exp7_c.png', model, alphabets, "Experiment 7: C")
+
+    exp_7 = np.hstack((exp7_a, exp7_b, exp7_c))
+    cv2.imshow('Experiment 7', exp_7)
+
+    exp8_ab = pred_img('./experiments/exp8_ab.png', model, alphabets, "Experiment 8: AB")
+    exp8_ba = pred_img('./experiments/exp8_ba.png', model, alphabets, "Experiment 8: BA")
+    exp8_ac = pred_img('./experiments/exp8_ac.png', model, alphabets, "Experiment 8: AC")
+    exp8_bc = pred_img('./experiments/exp8_bc.png', model, alphabets, "Experiment 8: BC")
+
+    exp_8 = np.hstack((exp8_ab, exp8_ba, exp8_ac, exp8_bc))
+    cv2.imshow('Experiment 8', exp_8)
+
+    exp9_black = pred_img('./experiments/exp9_black.png', model, alphabets, "Experiment 9: Black")
+    exp9_white = pred_img('./experiments/exp9_white.png', model, alphabets, "Experiment 9: White")
+    exp9_face = pred_img('./experiments/exp9_face.png', model, alphabets, "Experiment 9: Face")
+    exp9_field = pred_img('./experiments/exp9_field.png', model, alphabets, "Experiment 9: Field")
+
+    exp_9 = np.hstack((exp9_black, exp9_white, exp9_face, exp9_field))
+    cv2.imshow('Experiment 9', exp_9)
 
 
 
