@@ -12,7 +12,7 @@ from tensorflow.keras.utils import to_categorical
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
-from PIL import Image
+from PIL import Image, ImageOps
 from tensorflow import keras
 
 word_dict = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H', 8: 'I', 9: 'J', 10: 'K', 11: 'L',
@@ -116,12 +116,23 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE):
         pred = alphabets[np.argmax(test_yOHE[i])]
         ax.set_title("Prediction: " + pred)
         ax.grid()
+    print("Baselines -------------")
+    print("Image A")
+    print("Baseline 1 predicted: \"" + word_dict[random.randint(0, 25)] + "\" for " + './experiments/exp1_a.png')
+    baseline2('./experiments/exp1_a.png')
+    baseline3('./experiments/exp1_a.png')
 
-    # Baseline 1: Guessing Randomly
-    print("Baseline 1: " + word_dict[random.randint(0, 25)])
+    print("Image B")
+    print("Baseline 1 predicted: \"" + word_dict[random.randint(0, 25)] + "\" for " + './experiments/exp1_b.png')
+    baseline2('./experiments/exp1_b.png')
+    baseline3('./experiments/exp1_b.png')
 
-    # Baseline 2: Pixel Checker Decision Tree
-    # baseline2(img_filename)
+    print("Image C")
+    print("Baseline 1 predicted: \"" + word_dict[random.randint(0, 25)] + "\" for " + './experiments/exp1_c.png')
+    baseline2('./experiments/exp1_c.png')
+    baseline3('./experiments/exp1_c.png')
+
+    
 
     # Prediction on external image...
     exp1_a = pred_img('./experiments/exp1_a.png', model, "Experiment 1: A")
@@ -220,15 +231,17 @@ def pred_img(filename, model, header):
 def baseline2(filename):
     # Baseline that checks specific pixels and passes the values through a "decision tree"
     im = Image.open(filename, "r")
+    im = ImageOps.grayscale(im)
     pix = im.load()
+    
     width, height = im.size
-    print(im.size)
+    #print(im.size)
     if im.mode == "RGB":
         channels = 3
-        print(channels)
+        #print(channels)
     elif im.mode == "L":
         channels = 1
-        print(channels)
+        #print(channels)
     top = pix[0, width/2]
     middle = pix[height/2, width/2]
     left = pix[height/2, 0]
@@ -274,15 +287,15 @@ def baseline2(filename):
     else:
         letter_predict = 14
 
-    print("Baseline 1 predicted: " + word_dict[letter_predict])
+    print("Baseline 2 predicted: \"" + word_dict[letter_predict] + "\" for " + filename)
 
-    pass
 
 
 def baseline3(filename):
     # baseline checks pixels in a column and in a row through the center
 
     im = Image.open(filename, "r")
+    im = ImageOps.grayscale(im)
     pix = im.load()
     width, height = im.size
     half_width = width/2
@@ -354,8 +367,7 @@ def baseline3(filename):
     else:
         print("Theres too many height crossings")
 
-        print("Baseline 2 predicted: " + word_dict[letter_predict])
-    pass
+    print("Baseline 3 predicted: \"" + word_dict[letter_predict] + "\" for " + filename)
 
 
 if __name__ == '__main__':
