@@ -24,7 +24,7 @@ for i in word_dict.values():
     alphabets.append(i)
 
 
-def neural_network_example():
+def neural_network():
     # Read the data...
     data = pd.read_csv("A_Z Handwritten Data.csv").astype('float32')
     # Split data the X - Our data , and y - the prdict label
@@ -359,8 +359,7 @@ def baseline3(filename):
 
 
 if __name__ == '__main__':
-    # main()
-    neural_network_example()
+    neural_network()
 
     img_filename = './test/R-935.png'
     baseline2(img_filename)
