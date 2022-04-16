@@ -19,57 +19,10 @@ word_dict = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H', 8: 
              12: 'M', 13: 'N', 14: 'O', 15: 'P', 16: 'Q', 17: 'R', 18: 'S', 19: 'T', 20: 'U', 21: 'V', 22: 'W',
              23: 'X', 24: 'Y', 25: 'Z'}
 
+alphabets = []
+for i in word_dict.values():
+    alphabets.append(i)
 
-def main():
-    # file stuff
-    dirname = os.path.dirname(__file__)
-    path_train = os.path.join(dirname, 'train')
-    path_test = os.path.join(dirname, 'test')
-
-    img_list_train = os.listdir(path_train)
-    img_list_test = os.listdir(path_test)
-    alphabets = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-                 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-
-    # get image train
-    train_x = []
-    train_y = []
-    for img in img_list_train:
-        train_x.append(np.array(Image.open(os.path.join(path_train, img))))
-        label = []
-        for i in alphabets:
-            label.append(1 if i == img[0] else 0)
-        train_y.append(label)
-
-    train_x = np.array(train_x)
-    train_yOHE = np.array(train_y)
-    print("Train data shape: ", train_x.shape)
-
-    # get image test
-    test_x = []
-    test_y = []
-    for img in img_list_test:
-        test_x.append(np.array(Image.open(os.path.join(path_test, img))))
-        label = []
-        for i in alphabets:
-            label.append(1 if i == img[0] else 0)
-        test_y.append(label)
-
-    test_x = np.array(test_x)
-    test_yOHE = np.array(test_y)
-    print("Test data shape: ", test_x.shape)
-
-    # Reshaping the training & test dataset so that it can be put in the model...
-    train_X = train_x.reshape(train_x.shape[0], train_x.shape[1], train_x.shape[2], 1)
-    print("New shape of train data: ", train_X.shape)
-    test_X = test_x.reshape(test_x.shape[0], test_x.shape[1], test_x.shape[2], 1)
-    print("New shape of test data: ", test_X.shape)
-
-    # Converting the labels to categorical values...
-    print("New shape of train labels: ", train_yOHE.shape)
-    print("New shape of test labels: ", test_yOHE.shape)
-
-    CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets)
 
 def neural_network_example():
     # Read the data...
@@ -87,35 +40,6 @@ def neural_network_example():
     print("Train data shape: ", train_x.shape)
     print("Test data shape: ", test_x.shape)
 
-    # Dictionary for getting characters from index values...
-    # word_dict = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H', 8: 'I', 9: 'J', 10: 'K', 11: 'L',
-    #              12: 'M', 13: 'N', 14: 'O', 15: 'P', 16: 'Q', 17: 'R', 18: 'S', 19: 'T', 20: 'U', 21: 'V', 22: 'W',
-    #              23: 'X', 24: 'Y', 25: 'Z'}
-
-    alphabets = []
-    for i in word_dict.values():
-        alphabets.append(i)
-
-    # Plotting the number of alphabets in the dataset...
-    """ 
-    train_yint = np.int0(y)
-    count = np.zeros(26, dtype='int')
-    for i in train_yint:
-        count[i] += 1
-    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
-    ax.barh(alphabets, count)
-    plt.xlabel("Number of elements ")
-    plt.ylabel("Alphabets")
-    plt.grid()
-    plt.show()
-    # Shuffling the data ...
-    shuff = shuffle(train_x[:100])
-    fig, ax = plt.subplots(3, 3, figsize=(10, 10))
-    axes = ax.flatten()
-    for i in range(9):
-        axes[i].imshow(np.reshape(shuff[i], (28, 28)), cmap="Greys")
-    plt.show() """
-
     # Reshaping the training & test dataset so that it can be put in the model...
 
     train_X = train_x.reshape(train_x.shape[0], train_x.shape[1], train_x.shape[2], 1)
@@ -132,11 +56,10 @@ def neural_network_example():
     test_yOHE = to_categorical(test_y, num_classes=26, dtype='int')
     print("New shape of test labels: ", test_yOHE.shape)
 
-    CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets)
+    CNNModel(train_X, test_X, train_yOHE, test_yOHE)
 
 
-
-def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
+def CNNModel(train_X, test_X, train_yOHE, test_yOHE):
     # CNN model...
     if (os.path.exists(r'model_hand.h5')):
 
@@ -194,88 +117,77 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
         ax.set_title("Prediction: " + pred)
         ax.grid()
 
-
-    
-
-
-
-    #Baseline 1: Guessing Randomly
+    # Baseline 1: Guessing Randomly
     print("Baseline 1: " + word_dict[random.randint(0, 25)])
 
-    #Baseline 2: Pixel Checker Decision Tree
-    #baseline2(img_filename)
-
-
-
+    # Baseline 2: Pixel Checker Decision Tree
+    # baseline2(img_filename)
 
     # Prediction on external image...
-    exp1_a = pred_img('./experiments/exp1_a.png', model, alphabets, "Experiment 1: A")
-    exp1_b = pred_img('./experiments/exp1_b.png', model, alphabets, "Experiment 1: B")
-    exp1_c = pred_img('./experiments/exp1_c.png', model, alphabets, "Experiment 1: C")
+    exp1_a = pred_img('./experiments/exp1_a.png', model, "Experiment 1: A")
+    exp1_b = pred_img('./experiments/exp1_b.png', model, "Experiment 1: B")
+    exp1_c = pred_img('./experiments/exp1_c.png', model, "Experiment 1: C")
 
     exp_1 = np.hstack((exp1_a, exp1_b, exp1_c))
     cv2.imshow('Experiment 1', exp_1)
 
-    exp2_a = pred_img('./experiments/exp2_a.png', model, alphabets, "Experiment 2: A")
-    exp2_b = pred_img('./experiments/exp2_b.png', model, alphabets, "Experiment 2: B")
-    exp2_c = pred_img('./experiments/exp2_c.png', model, alphabets, "Experiment 2: C")
+    exp2_a = pred_img('./experiments/exp2_a.png', model, "Experiment 2: A")
+    exp2_b = pred_img('./experiments/exp2_b.png', model, "Experiment 2: B")
+    exp2_c = pred_img('./experiments/exp2_c.png', model, "Experiment 2: C")
 
     exp_2 = np.hstack((exp2_a, exp2_b, exp2_c))
     cv2.imshow('Experiment 2', exp_2)
 
-    exp3_a = pred_img('./experiments/exp3_a.png', model, alphabets, "Experiment 3: A")
-    exp3_b = pred_img('./experiments/exp3_b.png', model, alphabets, "Experiment 3: B")
-    exp3_c = pred_img('./experiments/exp3_c.png', model, alphabets, "Experiment 3: C")
+    exp3_a = pred_img('./experiments/exp3_a.png', model, "Experiment 3: A")
+    exp3_b = pred_img('./experiments/exp3_b.png', model, "Experiment 3: B")
+    exp3_c = pred_img('./experiments/exp3_c.png', model, "Experiment 3: C")
 
     exp_3 = np.hstack((exp3_a, exp3_b, exp3_c))
     cv2.imshow('Experiment 3', exp_3)
 
-    exp4_a = pred_img('./experiments/exp4_a.png', model, alphabets, "Experiment 4: A")
-    exp4_b = pred_img('./experiments/exp4_b.png', model, alphabets, "Experiment 4: B")
-    exp4_c = pred_img('./experiments/exp4_c.png', model, alphabets, "Experiment 4: C")
+    exp4_a = pred_img('./experiments/exp4_a.png', model, "Experiment 4: A")
+    exp4_b = pred_img('./experiments/exp4_b.png', model, "Experiment 4: B")
+    exp4_c = pred_img('./experiments/exp4_c.png', model, "Experiment 4: C")
 
     exp_4 = np.hstack((exp4_a, exp4_b, exp4_c))
     cv2.imshow('Experiment 4', exp_4)
 
-    exp5_a = pred_img('./experiments/exp5_a.png', model, alphabets, "Experiment 5: A")
-    exp5_b = pred_img('./experiments/exp5_b.png', model, alphabets, "Experiment 5: B")
-    exp5_c = pred_img('./experiments/exp5_c.png', model, alphabets, "Experiment 5: C")
+    exp5_a = pred_img('./experiments/exp5_a.png', model, "Experiment 5: A")
+    exp5_b = pred_img('./experiments/exp5_b.png', model, "Experiment 5: B")
+    exp5_c = pred_img('./experiments/exp5_c.png', model, "Experiment 5: C")
 
     exp_5 = np.hstack((exp5_a, exp5_b, exp5_c))
     cv2.imshow('Experiment 5', exp_5)
 
-    exp6_a = pred_img('./experiments/exp6_a.png', model, alphabets, "Experiment 6: A")
-    exp6_b = pred_img('./experiments/exp6_b.png', model, alphabets, "Experiment 6: B")
-    exp6_c = pred_img('./experiments/exp6_c.png', model, alphabets, "Experiment 6: C")
+    exp6_a = pred_img('./experiments/exp6_a.png', model, "Experiment 6: A")
+    exp6_b = pred_img('./experiments/exp6_b.png', model, "Experiment 6: B")
+    exp6_c = pred_img('./experiments/exp6_c.png', model, "Experiment 6: C")
 
     exp_6 = np.hstack((exp6_a, exp6_b, exp6_c))
     cv2.imshow('Experiment 6', exp_6)
 
-    exp7_a = pred_img('./experiments/exp7_a.png', model, alphabets, "Experiment 7: A")
-    exp7_b = pred_img('./experiments/exp7_b.png', model, alphabets, "Experiment 7: B")
-    exp7_c = pred_img('./experiments/exp7_c.png', model, alphabets, "Experiment 7: C")
+    exp7_a = pred_img('./experiments/exp7_a.png', model, "Experiment 7: A")
+    exp7_b = pred_img('./experiments/exp7_b.png', model, "Experiment 7: B")
+    exp7_c = pred_img('./experiments/exp7_c.png', model, "Experiment 7: C")
 
     exp_7 = np.hstack((exp7_a, exp7_b, exp7_c))
     cv2.imshow('Experiment 7', exp_7)
 
-    exp8_ab = pred_img('./experiments/exp8_ab.png', model, alphabets, "Experiment 8: AB")
-    exp8_ba = pred_img('./experiments/exp8_ba.png', model, alphabets, "Experiment 8: BA")
-    exp8_ac = pred_img('./experiments/exp8_ac.png', model, alphabets, "Experiment 8: AC")
-    exp8_bc = pred_img('./experiments/exp8_bc.png', model, alphabets, "Experiment 8: BC")
+    exp8_ab = pred_img('./experiments/exp8_ab.png', model, "Experiment 8: AB")
+    exp8_ba = pred_img('./experiments/exp8_ba.png', model, "Experiment 8: BA")
+    exp8_ac = pred_img('./experiments/exp8_ac.png', model, "Experiment 8: AC")
+    exp8_bc = pred_img('./experiments/exp8_bc.png', model, "Experiment 8: BC")
 
     exp_8 = np.hstack((exp8_ab, exp8_ba, exp8_ac, exp8_bc))
     cv2.imshow('Experiment 8', exp_8)
 
-    exp9_black = pred_img('./experiments/exp9_black.png', model, alphabets, "Experiment 9: Black")
-    exp9_white = pred_img('./experiments/exp9_white.png', model, alphabets, "Experiment 9: White")
-    exp9_face = pred_img('./experiments/exp9_face.png', model, alphabets, "Experiment 9: Face")
-    exp9_field = pred_img('./experiments/exp9_field.png', model, alphabets, "Experiment 9: Field")
+    exp9_black = pred_img('./experiments/exp9_black.png', model, "Experiment 9: Black")
+    exp9_white = pred_img('./experiments/exp9_white.png', model, "Experiment 9: White")
+    exp9_face = pred_img('./experiments/exp9_face.png', model, "Experiment 9: Face")
+    exp9_field = pred_img('./experiments/exp9_field.png', model, "Experiment 9: Field")
 
     exp_9 = np.hstack((exp9_black, exp9_white, exp9_face, exp9_field))
     cv2.imshow('Experiment 9', exp_9)
-
-
-
 
     while (1):
         k = cv2.waitKey(1) & 0xFF
@@ -284,8 +196,7 @@ def CNNModel(train_X, test_X, train_yOHE, test_yOHE, alphabets):
     cv2.destroyAllWindows()
 
 
-
-def pred_img(filename, model, alphabets, header):
+def pred_img(filename, model, header):
     img = cv2.imread(filename)
     img_copy = img.copy()
 
@@ -303,13 +214,11 @@ def pred_img(filename, model, alphabets, header):
     cv2.putText(img, header, (20, 25), cv2.FONT_HERSHEY_TRIPLEX, 0.7, color=(0, 0, 230))
     cv2.putText(img, "Prediction: " + img_pred, (20, 410), cv2.FONT_HERSHEY_DUPLEX, 1.3, color=(255, 0, 30))
 
-
     return img
 
 
-
 def baseline2(filename):
-    ##Baseline that checks specific pixels and passes the values through a "decision tree"
+    # Baseline that checks specific pixels and passes the values through a "decision tree"
     im = Image.open(filename, "r")
     pix = im.load()
     width, height = im.size
@@ -317,7 +226,7 @@ def baseline2(filename):
     if im.mode == "RGB":
         channels = 3
         print(channels)
-    elif im.mode =="L":
+    elif im.mode == "L":
         channels = 1
         print(channels)
     top = pix[0, width/2]
@@ -330,7 +239,7 @@ def baseline2(filename):
         if middle >= 250:
             if left >= 250:
                 if right >= 250:
-                    letter_predict= 0
+                    letter_predict = 0
                 else:
                     letter_predict = 1
 
@@ -350,7 +259,7 @@ def baseline2(filename):
     elif middle >= 250:
         if left >= 250:
             if right >= 250:
-                letter_predict= 8
+                letter_predict = 8
             else:
                 letter_predict = 9
         elif right >= 250:
@@ -369,8 +278,9 @@ def baseline2(filename):
 
     pass
 
+
 def baseline3(filename):
-    ##baseline checks pixels in a column and in a row through the center
+    # baseline checks pixels in a column and in a row through the center
 
     im = Image.open(filename, "r")
     pix = im.load()
@@ -380,16 +290,16 @@ def baseline3(filename):
     count_height = 0
     count_width = 0
     for h in range(0, height):
-        if pix[h, half_width] <= 200: #goes dark
+        if pix[h, half_width] <= 200:  # goes dark
             begin = True
-        elif begin and pix[h, half_width] >= 250: #becomes white
+        elif begin and pix[h, half_width] >= 250:  # becomes white
             count_height += 1
             begin = False
     half_height = height/2
     for w in range(0, width):
-        if pix[half_height, w] <=200: #Goes dark
+        if pix[half_height, w] <= 200:  # Goes dark
             begin = True
-        elif begin and pix[half_height, w] >= 250: #Becomes white
+        elif begin and pix[half_height, w] >= 250:  # Becomes white
             count_width += 1
             begin = False
     letter_predict = 0
@@ -449,7 +359,7 @@ def baseline3(filename):
 
 
 if __name__ == '__main__':
-    #main()
+    # main()
     neural_network_example()
 
     img_filename = './test/R-935.png'
